@@ -3,6 +3,13 @@ import socket
 from flask import Flask, request, redirect, url_for
 from kubernetes import client, config
 import os
+
+global cuid
+cuid = uuid.uuid4()
+
+global servicePort
+servicePort = 6000
+
 config.load_kube_config(
     os.path.join(os.environ["HOME"], '.kube/config'))
 
@@ -16,32 +23,35 @@ for pod in pod_list.items:
 
 app = Flask(__name__)
 
+#  uid
+# def generateId():
+#     uid = uuid.uuid4()
+#     return uid
 
-def generateId():
-    uid = uuid.uuid4()
-    return uid
 
-
-def judge_in_or_out():
+def judge_in_or_out(header):
     ip = socket.gethostbyname(socket.gethostname())
-    # 同一ipじゃなかったらingressだからin, 同一ipならサービスからなのでOUT
-    if request.remote_addr is not ip:
-        return "IN"
-    if request.remote_addr is ip:
-        return "OUT"
+
+    # 同一cuidじゃなかったらingressだからin, 同一cuidならサービスからなのでOUT
+    if header["cuid"] is not cuid:
+        # IN
+        header[cuid] = cuid
+        return header
+
+    if header["cuid"] is cuid:
+        # OUT
+        return header
 
 
 @app.route("/", methods=['GET'])
 def proxy():
-    uid = generateId()
-    servicePort = 6000
-
+    request.headers = judge_in_or_out(request.headers)
     return redirect("http://localhost:" + servicePort)
 
 
 @app.route("/", methods=['POST'])
 def proxy(uid):
-    servicePort = 6000
+    request.headers = judge_in_or_out(request.headers)
     return redirect("http://localhost:" + servicePort)
 
 
