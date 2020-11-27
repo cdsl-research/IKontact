@@ -12,24 +12,32 @@ This is proxy working on kubernetes systems.
 .
 ├── app
 │   ├── __init__.py
-│   └── sidecar-worker #main conponents
-│       ├── connect.py #api which connect control plane's db
+│   └── sidecar-worker
 │       ├── Dockerfiles
-│       │   ├── entry.sh
-│       │   ├── IKontact.Dockerfile
-│       │   └── __init__.py
+│       │   ├── Dockerfile
+│       │   ├── __init__.py
+│       │   ├── app
+│       │   │   ├── __init__.py
+│       │   │   ├── connect.py
+│       │   │   ├── proxy.py
+│       │   │   └── requirements.txt
+│       │   ├── docker_run.sh
+│       │   └── entry.sh
 │       ├── __init__.py
-│       ├── proxy.py
-│       └── requirements.txt
+│       └── app
+│           ├── __init__.py
+│           ├── proxy.py
+│           └── requirements.txt
 ├── demo
 │   ├── Deployment
+│   │   ├── IKontact-example.yaml
 │   │   ├── ffmpeg-conv.yaml
 │   │   ├── flask-calc.yaml
 │   │   ├── flask-gateway.yaml
 │   │   ├── haproxy-lb.yaml
-│   │   ├── IKontact-example.yaml
 │   │   └── nginx-gateway.yaml
 │   └── Evaluation
 │       └── eval.py
 └── readme.md
+
 ```
