@@ -7,8 +7,12 @@ import os
 global cuid
 cuid = uuid.uuid4()
 
+global nextip
+
 global servicePort
 servicePort = 6000
+global nextPort
+nextPort = 80
 
 config.load_kube_config(
     os.path.join(os.environ["HOME"], '.kube/config'))
@@ -45,9 +49,11 @@ def judge_in_or_out(header):
 
 @app.route("/", methods=['GET'])
 def proxy():
-    request.headers = judge_in_or_out(request.headers)
-    return redirect("http://localhost:" + servicePort)
-
+    if request.headers["cuid"] is cuid:
+        request.headers = judge_in_or_out(request.headers)
+        return redirect("http://localhost:" + servicePort)
+    else:
+        return redirect(nextip+ + nextPort)
 
 @app.route("/", methods=['POST'])
 def proxy(uid):
