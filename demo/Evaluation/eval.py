@@ -6,6 +6,7 @@ result = []
 print("input your API(Gateway) IP")
 ip = input()
 print("input request number of try for evaluation. (default=10)")
+r
 try_num = input() if input() is None else 10
 
 for i in range(int(try_num)):
